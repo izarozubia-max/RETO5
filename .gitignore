@@ -1,5 +1,5 @@
-data/*
-docker_reto_5_alumnos/datos/
+/data/
+/docker_reto_5_alumnos/datos/
 
 .env
 __pycache__/
