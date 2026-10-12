@@ -1,4 +1,6 @@
-data/*
+/data/
+/docker_reto_5_alumnos/datos/
+
+.env
 __pycache__/
 *.pyc
-/docker_reto_5_alumnos/datos/
