@@ -1,6 +1,13 @@
+<<<<<<< HEAD
+data/*
+__pycache__/
+*.pyc
+docker_reto_5_alumnos/datos/
+=======
 /data/
 /docker_reto_5_alumnos/datos/
 
 .env
 __pycache__/
 *.pyc
+>>>>>>> 5c4251398fffc987ab7672980af2656d80cac7b2
