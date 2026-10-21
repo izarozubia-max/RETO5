@@ -36,12 +36,7 @@ def obtener_prestamos():
 
     return {"prestamos": prestamos}, 200
 
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=8000,
-        debug=True
-    )
+
 
 @app.get("/estado")
 def comprobar_conexion():
@@ -49,3 +44,46 @@ def comprobar_conexion():
         conexion.execute(text("SELECT 1"))
 
     return {"mensaje": "Conexión con MySQL correcta"}, 200
+
+@app.get("/clientes")
+def obtener_clientes():
+    return {
+        "mensaje": "Consulta de todos los clientes"
+}
+
+@app.get("/clientes/<string:id_cliente>")
+def obtener_cliente(id_cliente):
+    return {
+        "mensaje": "Consulta de un cliente",
+        "id": id_cliente
+    }
+
+@app.get("/clientes/impago/<int:impago>")
+def filtrar_impago(impago):
+    if impago not in [0, 1]:
+        return {"error": "El impago debe ser 0 o 1"}, 400
+
+    return {
+        "mensaje": "Filtrar clientes por impago",
+        "impago": impago
+    }
+
+@app.get("/estadisticas")
+def obtener_estadisticas():
+    return {
+        "mensaje": "Estadísticas generales de los créditos"
+    }
+
+@app.get("/clientes/<string:id_cliente>/analisis")
+def analizar_cliente(id_cliente):
+    return {
+        "mensaje": "Análisis del cliente",
+        "id": id_cliente
+    }
+
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=8000,
+        debug=True
+    )
