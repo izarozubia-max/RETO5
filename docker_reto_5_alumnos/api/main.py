@@ -1,5 +1,6 @@
 import os
-
+import urllib.request
+import json
 from flask import Flask
 from sqlalchemy import create_engine, text
 
@@ -80,6 +81,25 @@ def analizar_cliente(id_cliente):
         "mensaje": "Análisis del cliente",
         "id": id_cliente
     }
+
+# Consultar una API externa
+@app.get("/monedas")
+def consultar_monedas():
+    url = "https://open.er-api.com/v6/latest/EUR"
+
+    try:
+        respuesta = urllib.request.urlopen(url)
+        datos = json.loads(respuesta.read())
+
+        return {
+            "mensaje": "Datos obtenidos de una API externa",
+            "moneda_base": datos["base_code"],
+            "tipos_cambio": datos["rates"]
+        }
+
+    except Exception:
+        return {"error": "No se pudo consultar la API externa"}, 500
+
 
 if __name__ == "__main__":
     app.run(
