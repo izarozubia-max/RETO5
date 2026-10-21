@@ -1,5 +1,5 @@
 
-Este proyecto proporciona un entorno Docker con una base de datos MySQL ya preparada y cargada a partir de los datos disponibles en `datos/datos.xlsx`.
+Este proyecto proporciona un entorno Docker con una base de datos MySQL ya preparada y cargada a partir de los datos disponibles en `datos_powerbi/datos.xlsx`.
 
 La base de datos utiliza almacenamiento persistente mediante un volumen Docker.
 
@@ -28,7 +28,7 @@ Servicios disponibles:
 │   └── requirements.txt
 │
 ├── datos/
-│   └── datos.xlsx
+│   └── datos_powerbi.xlsx
 │
 ├── loader/
 │   ├── Dockerfile
