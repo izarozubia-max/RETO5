@@ -3,6 +3,7 @@ import urllib.request
 import json
 from flask import Flask
 from sqlalchemy import create_engine, text
+import requests
 
 app = Flask(__name__)
 
@@ -18,24 +19,24 @@ def root():
         "mensaje": "API Flask funcionando"
     }
 
-@app.get("/prestamos")
-def obtener_prestamos():
+@app.get("/prestamos/<string:id_prestamo>")
+def obtener_prestamo(id_prestamo: str):
     with engine.connect() as conexion:
         resultado = conexion.execute(
             text("""
                 SELECT *
                 FROM clientes_credito
-                ORDER BY row_id
-                LIMIT 10
-            """)
+                WHERE id = :id_prestamo
+            """),
+            {"id_prestamo": id_prestamo}
         )
 
-        prestamos = [
-            dict(fila)
-            for fila in resultado.mappings()
-        ]
+        prestamo = resultado.mappings().first()
 
-    return {"prestamos": prestamos}, 200
+    if prestamo is None:
+        return {"error": "Préstamo no encontrado"}, 404
+
+    return {"prestamo": dict(prestamo)}, 200
 
 
 
@@ -46,64 +47,108 @@ def comprobar_conexion():
 
     return {"mensaje": "Conexión con MySQL correcta"}, 200
 
-@app.get("/clientes")
-def obtener_clientes():
-    return {
-        "mensaje": "Consulta de todos los clientes"
-}
-
 @app.get("/clientes/<string:id_cliente>")
-def obtener_cliente(id_cliente):
-    return {
-        "mensaje": "Consulta de un cliente",
-        "id": id_cliente
-    }
+def obtener_cliente(id_cliente: str):
+    with engine.connect() as conexion:
+        resultado = conexion.execute(
+            text("""
+                SELECT *
+                FROM clientes_credito
+                WHERE id = :id_cliente
+            """),
+            {"id_cliente": id_cliente}
+        )
 
-@app.get("/clientes/impago/<int:impago>")
-def filtrar_impago(impago):
+        cliente = resultado.mappings().first()
+
+    if cliente is None:
+        return {"error": "Cliente no encontrado"}, 404
+
+    return {"cliente": dict(cliente)}, 200
+
+@app.get("/prestamos/impago/<int:impago>")
+def filtrar_impago(impago: int):
     if impago not in [0, 1]:
         return {"error": "El impago debe ser 0 o 1"}, 400
 
-    return {
-        "mensaje": "Filtrar clientes por impago",
-        "impago": impago
-    }
+    with engine.connect() as conexion:
+        resultado = conexion.execute(
+            text("""
+                SELECT *
+                FROM clientes_credito
+                WHERE impago = :impago
+                ORDER BY row_id
+            """),
+            {"impago": str(impago)}
+        )
+
+        clientes = [
+            dict(fila)
+            for fila in resultado.mappings()
+        ]
+
+    return {"clientes": clientes}, 200
 
 @app.get("/estadisticas")
 def obtener_estadisticas():
-    return {
-        "mensaje": "Estadísticas generales de los créditos"
+    with engine.connect() as conexion:
+        resultado = conexion.execute(
+            text("""
+                SELECT
+                    COUNT(*) AS total_prestamos,
+                    AVG(CAST(edad AS DECIMAL(10, 2))) AS edad_media,
+                    AVG(CAST(ingresos AS DECIMAL(15, 2))) AS ingresos_medios,
+                    AVG(CAST(monto_inicial AS DECIMAL(15, 2))) AS monto_medio,
+                    SUM(
+                        CASE WHEN impago = '1' THEN 1 ELSE 0 END
+                    ) AS total_impagos
+                FROM clientes_credito
+            """)
+        )
+
+        fila = resultado.mappings().one()
+
+    estadisticas = {
+        "total_prestamos": int(fila["total_prestamos"]),
+        "edad_media": (
+            float(fila["edad_media"])
+            if fila["edad_media"] is not None else None
+        ),
+        "ingresos_medios": (
+            float(fila["ingresos_medios"])
+            if fila["ingresos_medios"] is not None else None
+        ),
+        "monto_medio": (
+            float(fila["monto_medio"])
+            if fila["monto_medio"] is not None else None
+        ),
+        "total_impagos": int(fila["total_impagos"] or 0)
     }
 
-@app.get("/clientes/<string:id_cliente>/analisis")
-def analizar_cliente(id_cliente):
-    return {
-        "mensaje": "Análisis del cliente",
-        "id": id_cliente
-    }
+    return {"estadisticas": estadisticas}, 200
 
 # Consultar una API externa
+
 @app.get("/monedas")
 def consultar_monedas():
     url = "https://open.er-api.com/v6/latest/EUR"
 
     try:
-        respuesta = urllib.request.urlopen(url)
-        datos = json.loads(respuesta.read())
+        respuesta = requests.get(url, timeout=5)
+        respuesta.raise_for_status()
+
+        datos = respuesta.json()
+
+        if "base_code" not in datos or "rates" not in datos:
+            return {"error": "La respuesta no contiene los datos necesarios"}, 502
 
         return {
-            "mensaje": "Datos obtenidos de una API externa",
             "moneda_base": datos["base_code"],
             "tipos_cambio": datos["rates"]
-        }
+        }, 200
 
-    except Exception:
-        return {"error": "No se pudo consultar la API externa"}, 500
+    except requests.RequestException:
+        return {"error": "No se pudo consultar la API externa"}, 503
 
-
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=8000,
-        debug=True
-    )
+    except ValueError:
+        return {"error": "La respuesta no es un JSON válido"}, 502

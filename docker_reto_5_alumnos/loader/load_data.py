@@ -87,7 +87,6 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
         "estado_civil",
         "posesion_hipoteca",
         "personas_cargo",
-        "proposito",
         "fiador",
         "impago",
         "prima",
