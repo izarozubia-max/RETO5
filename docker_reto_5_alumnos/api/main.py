@@ -1,6 +1,4 @@
 import os
-import urllib.request
-import json
 from flask import Flask
 from sqlalchemy import create_engine, text
 import requests
@@ -38,7 +36,23 @@ def obtener_prestamo(id_prestamo: str):
 
     return {"prestamo": dict(prestamo)}, 200
 
+@app.get("/prestamos")
+def obtener_prestamos():
+    with engine.connect() as conexion:
+        resultado = conexion.execute(
+            text("""
+                SELECT *
+                FROM clientes_credito
+                ORDER BY row_id
+            """)
+        )
 
+        prestamos = [
+            dict(fila)
+            for fila in resultado.mappings()
+        ]
+
+    return {"prestamos": prestamos}, 200
 
 @app.get("/estado")
 def comprobar_conexion():
@@ -46,25 +60,6 @@ def comprobar_conexion():
         conexion.execute(text("SELECT 1"))
 
     return {"mensaje": "Conexión con MySQL correcta"}, 200
-
-@app.get("/clientes/<string:id_cliente>")
-def obtener_cliente(id_cliente: str):
-    with engine.connect() as conexion:
-        resultado = conexion.execute(
-            text("""
-                SELECT *
-                FROM clientes_credito
-                WHERE id = :id_cliente
-            """),
-            {"id_cliente": id_cliente}
-        )
-
-        cliente = resultado.mappings().first()
-
-    if cliente is None:
-        return {"error": "Cliente no encontrado"}, 404
-
-    return {"cliente": dict(cliente)}, 200
 
 @app.get("/prestamos/impago/<int:impago>")
 def filtrar_impago(impago: int):
@@ -147,8 +142,8 @@ def consultar_monedas():
             "tipos_cambio": datos["rates"]
         }, 200
 
-    except requests.RequestException:
-        return {"error": "No se pudo consultar la API externa"}, 503
-
     except ValueError:
         return {"error": "La respuesta no es un JSON válido"}, 502
+
+    except requests.RequestException:
+        return {"error": "No se pudo consultar la API externa"}, 503
