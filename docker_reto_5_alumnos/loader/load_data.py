@@ -11,7 +11,7 @@ DATABASE_URL = os.getenv(
     "mysql+pymysql://clase:clase123@db:3306/creditos",
 )
 
-DATA_FILE = Path(os.getenv("DATA_FILE", "/datos/datos.xlsx"))
+DATA_FILE = Path(os.getenv("DATA_FILE", "/datos/datos_powerbi.csv"))
 TABLE_NAME = "clientes_credito"
 
 FORCE_RELOAD = (
@@ -87,7 +87,6 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
         "estado_civil",
         "posesion_hipoteca",
         "personas_cargo",
-        "proposito",
         "fiador",
         "impago",
         "prima",
