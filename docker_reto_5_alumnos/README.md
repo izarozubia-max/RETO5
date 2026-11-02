@@ -41,16 +41,21 @@ http://localhost:8000/estado
 
 ## Estructura del entorno Docker
 
-| Ruta | Contenido |
-|---|---|
-| `api/main.py` | Rutas y lógica de la API Flask. |
-| `api/requirements.txt` | Dependencias de la API. |
-| `api/Dockerfile` | Configuración de la imagen de la API. |
-| `loader/load_data.py` | Lectura, preparación y carga de los datos en MySQL. |
-| `loader/requirements.txt` | Dependencias del cargador. |
-| `loader/Dockerfile` | Configuración de la imagen del cargador. |
-| `datos/datos_powerbi.csv` | Dataset de entrada, disponible solo localmente. |
-| `docker-compose.yml` | Configuración de los servicios, red y volumen. |
+├── api/
+│   ├── Dockerfile
+│   ├── main.py
+│   └── requirements.txt
+│
+├── datos/
+│   └── datos_powerbi.csv
+│
+├── loader/
+│   ├── Dockerfile
+│   ├── load_data.py
+│   └── requirements.txt
+│
+├── docker-compose.yml
+└── README.md
 
 ## Persistencia de datos
 
