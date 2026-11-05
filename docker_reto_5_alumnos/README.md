@@ -1,7 +1,5 @@
 # Reto 5 — API REST de préstamos
 
-La API REST del Reto 5 permite consultar los préstamos almacenados en MySQL, filtrar por impago y obtener estadísticas generales. También consulta un servicio externo de tipos de cambio. Power BI utiliza el endpoint `/prestamos` como origen de datos.
-
 ## Requisitos
 
 - Docker Desktop instalado y en funcionamiento.
