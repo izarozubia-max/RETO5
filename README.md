@@ -23,6 +23,7 @@ Equipo Rojo: Markel Araguzo Salaberria, Gaizka Saiz Mimenza, Izaro Zubia Zuluaga
 ├── Preprocesamiento.ipynb
 ├── cuadros_amortización.ipynb
 ├── Valor_actual.ipynb
+├── calculo_van_tir.ipynb
 ├── prediccion_calcular_prima.ipynb
 ├── prediccion_probabilidad_impago.ipynb
 ├── datos_para_powerBI.ipynb
@@ -46,6 +47,8 @@ Los datos no se incluyen en el repositorio (están excluidos mediante `.gitignor
 | `prediccion_calcular_prima.ipynb` | Predice el cálculo de la prima de cada cliente |
 | `prediccion_probabilidad_impago.ipynb` | Predice la probabilidad de impago de cada cliente |
 | `datos_para_powerBI.ipynb` | Prepara los datos para el informe de Power BI y para la API |
+| `calculo_van_tir.ipynb` | Cálculo del VAN y TIR |
+
 
 ## API
 
