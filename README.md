@@ -17,9 +17,10 @@ El objetivo principal del reto es estimar el valor presente del riesgo asumido p
     └── load_data.py
     └── requirements.txt
 ├── .gitignore                             # datos
-├── Estimar_prima.ipynb
 ├── Preprocesamiento.ipynb
 ├── cuadros_amortización.ipynb
+├── Valor_actual.ipynb
+├── predicción_calcular_prima.ipynb
 ├── README.md              
 ```
 
@@ -30,10 +31,10 @@ El objetivo principal del reto es estimar el valor presente del riesgo asumido p
 ## Notebooks
 
 | `Preprocesamiento.ipynb` | Análisis exploratorio y limpieza |
-| `Estimar_prima.ipynb` | Estima la prima de cada cliente |
 | `cuadros_amortizacion.ipynb` | Cálculo de cuotas a pagar de cada cliente mediante los sistemas de amortización francés y alemán |
+| `predicción_calcular_prima.ipynb` | Predice el cálculo de la prima de cada cliente |
+| `Valor_actual.ipynb` | Cálculo del valor actual sobre los préstamos en la mitad del periodo de los pagos |
 
-(Indica el orden en que deben ejecutarse y si alguno depende de archivos generados por otro.)
 
 ## API
 Toda la información se encuentra en el README.md de la carpeta docker_reto_5_alumnos que es la carpeta en la que se encuentra la API
